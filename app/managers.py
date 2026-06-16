@@ -9,12 +9,16 @@ class ActorManager:
         self.table_name = table_name
 
     def create(self, first_name: str, last_name: str) -> Actor:
-        self._connection.execute(
+        cursor = self._connection.execute(
             f"INSERT INTO {self.table_name} (first_name, last_name) "
             f"VALUES (?, ?)",
             (first_name, last_name)
         )
         self._connection.commit()
+
+        return Actor(id=cursor.lastrowid,
+                     first_name=first_name,
+                     last_name=last_name)
 
     def all(self) -> list[Actor]:
         cursor = self._connection.execute(
